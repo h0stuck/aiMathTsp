@@ -10,13 +10,16 @@ public class GameSystem : MonoBehaviour
     public GameObject[] points = new GameObject[11];
     public int[] fastest = new int[10];
     public int[] curFastest = new int[10];
+    public int[] allTimeFastest = new int[10];
 
     public TextMeshProUGUI disText;
     public TextMeshProUGUI seqText;
     public TextMeshProUGUI genText;
 
     public int curGen = 0;
-    public float fastestDis = 999999999f;
+    public int fastestGen = 0;
+    public float fastestDis = float.MaxValue;
+    public float allTimeFastestDis = float.MaxValue;
     public bool draw = false;
     public bool useDraw = true;
 
@@ -28,6 +31,7 @@ public class GameSystem : MonoBehaviour
         {
             fastest[i] = nums[i];
             curFastest[i] = nums[i];
+            allTimeFastest[i] = nums[i];
         }
         fastestDis = MutDis(fastest);
         Invoke("FirstDraw", 2.5f);
@@ -42,9 +46,25 @@ public class GameSystem : MonoBehaviour
             Mutation();
         }
 
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            for (int i = 0; i < 500; i++)
+            {
+                curGen++;
+                Mutation();
+            }
+        }
+
         if (Input.GetKeyUp(KeyCode.D))
         {
             draw = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.B))
+        {
+            curGen = fastestGen;
+            fastestDis = allTimeFastestDis;
+            curFastest = allTimeFastest;
         }
 
         genText.text = "Generation: " + curGen.ToString();
@@ -61,7 +81,7 @@ public class GameSystem : MonoBehaviour
     void Mutation()
     {
         int[][] mut = new int[5][];
-        float dis = 999999999f;
+        float dis = float.MaxValue;
         int disNum = -1;
         for(int i=0; i<5; i++)
         {
@@ -72,9 +92,7 @@ public class GameSystem : MonoBehaviour
             }
             int a = Random.Range(0, 10);
             int b = Random.Range(0, 10);
-            int temp = mut[i][a];
-            mut[i][a] = mut[i][b];
-            mut[i][b] = temp;
+            (mut[i][a], mut[i][b]) = (mut[i][b], mut[i][a]);
             float curDis = MutDis(mut[i]);
             if(curDis < dis)
             {
@@ -90,18 +108,28 @@ public class GameSystem : MonoBehaviour
             fastestDis = dis;
             fastest = mut[disNum];
         }
+
+        if (fastestDis < allTimeFastestDis)
+        {
+            allTimeFastestDis = fastestDis;
+            allTimeFastest = fastest;
+            fastestGen = curGen;
+        }
         
     }
 
     float MutDis(int[] a)
     {
         float result = 0f;
-        result += Vector2.Distance(StartPosition.position, points[a[0]].transform.position);
+        result += Vector2.Distance(StartPosition.position, 
+            points[a[0]].transform.position);
         for(int i=0; i<9; i++)
         {
-            result += Vector2.Distance(points[a[i]].transform.position, points[a[i + 1]].transform.position);
+            result += Vector2.Distance(points[a[i]].transform.position, 
+                points[a[i + 1]].transform.position);
         }
-        result += Vector2.Distance(points[a[9]].transform.position, StartPosition.position);
+        result += Vector2.Distance(points[a[9]].transform.position, 
+            StartPosition.position);
         return result;
     }
 
