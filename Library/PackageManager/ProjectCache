@@ -4276,6 +4276,7 @@ m_ResolvedPackages:
     - 1.8.13
     - 1.8.14
     - 1.8.15
+    - 1.8.16
     compatible:
     - 1.6.6
     - 1.7.0-pre.1
@@ -4300,6 +4301,7 @@ m_ResolvedPackages:
     - 1.8.13
     - 1.8.14
     - 1.8.15
+    - 1.8.16
     verified: 1.6.6
   dependencies:
   - name: com.unity.mathematics

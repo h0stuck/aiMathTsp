@@ -48,7 +48,7 @@ public class GameSystem : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.A))
         {
-            for (int i = 0; i < 500; i++)
+            for (int i = 0; i < 5; i++)
             {
                 curGen++;
                 Mutation();
